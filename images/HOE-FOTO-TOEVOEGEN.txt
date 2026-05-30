@@ -1,0 +1,20 @@
+Sla de podiumfoto van Sajac hier op als:
+
+    sajac-hero.jpg
+
+(exact die naam, kleine letters, met .jpg extensie)
+
+De CSS pakt 'm automatisch op als hero achtergrond zodra het bestand
+hier staat. Als hij er niet staat valt de site terug op een warme
+gradient.
+
+Tips voor het foto-bestand:
+- Aanbevolen breedte: 1600-2400 pixels
+- Formaat: JPG of WebP
+- Max bestandsgrootte: 500 KB (anders eerst comprimeren via
+  squoosh.app of tinyjpg.com)
+
+Voor social-media previews (WhatsApp, Facebook, LinkedIn):
+- Sla daarvoor ook nog een vierkant-achtige versie op als og.jpg
+- Aanbevolen: 1200 x 630 pixels (precies)
+- In dezelfde images/ map
