@@ -1,0 +1,12 @@
+# Files NOT to upload to Cloudflare Pages.
+# The new Workers-based Pages deploy doesn't auto-skip these
+# (the legacy Pages runtime did), so we list them explicitly.
+
+# Local dev / VCS internals — would leak commit history if exposed
+.git/
+.gitignore
+.wrangler/
+
+# Repo metadata — no value to serve publicly
+README.md
+.assetsignore
