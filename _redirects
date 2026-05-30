@@ -1,4 +1,0 @@
-# Cloudflare Pages — redirect www to apex in one 301 hop so Search Console
-# sees a single canonical host. Without this, both www.sajac.nl and sajac.nl
-# would serve 200 and Google would flag them as duplicates.
-https://www.sajac.nl/* https://sajac.nl/:splat 301!
