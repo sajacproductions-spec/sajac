@@ -96,7 +96,7 @@
     <section class="hero">
         <div class="hero-bg" aria-hidden="true"></div>
         <div class="hero-inner">
-            <span class="kicker">Live zanger en gitarist · Dordrecht</span>
+            <span class="kicker">Live zanger en gitarist · Zuid-Holland</span>
             <h1 class="hero-title">Sajac</h1>
             <p class="hero-sub">Pop, rock, reggae en singer-songwriter voor bruiloften, bedrijfsfeesten en restaurants in Zuid-Holland.</p>
             <div class="hero-actions">
@@ -121,7 +121,7 @@
         <div class="container">
             <div class="section-head">
                 <span class="kicker">Wat ik doe</span>
-                <h2 class="display">Drie soorten optredens, één aanpak.</h2>
+                <h2 class="display">Voor elke gelegenheid, één aanpak.</h2>
             </div>
             <div class="service-grid">
                 <article class="service-card">
@@ -139,6 +139,11 @@
                     <h3>Restaurants</h3>
                     <p>Vaste sessies voor de zaak, of een eenmalige thema-avond. Volume past zich aan de sfeer aan. Achtergrond tijdens het diner, of pittiger als de gasten dat willen.</p>
                 </article>
+                <article class="service-card">
+                    <div class="service-num">04</div>
+                    <h3>Verjaardagen &amp; jubilea</h3>
+                    <p>Mijlpaalmomenten verdienen iets persoonlijks. Een setlist op maat van de jarige of het bedrijf. Werkt voor besloten feesten thuis, in een zaal of in horeca.</p>
+                </article>
             </div>
             <div class="service-foot">
                 <div class="foot-item">
@@ -151,7 +156,7 @@
                 </div>
                 <div class="foot-item">
                     <strong>Snelle reactie</strong>
-                    <span>Reactie op een aanvraag meestal binnen 24 uur. Vaak boekbaar binnen één werkdag als de datum vrij is.</span>
+                    <span>Reactie op een aanvraag binnen 24 uur. Boekbaar binnen één werkdag bij vrije datum.</span>
                 </div>
             </div>
         </div>
@@ -217,12 +222,12 @@
             <div class="price-anchor">
                 <div class="price-from-label">Vanaf</div>
                 <div class="price-from-amount">&euro;300</div>
-                <p class="price-from-desc">Het exacte tarief hangt af van duur, datum en locatie. Vraag vrijblijvend een offerte aan, reactie meestal binnen 24 uur.</p>
+                <p class="price-from-desc">Het exacte tarief hangt af van duur, datum en locatie. Vraag vrijblijvend een offerte aan, reactie binnen 24 uur.</p>
                 <a href="#contact" class="btn btn-primary btn-lg">Vraag een offerte aan</a>
                 <div class="price-includes">
                     <span>Inclusief eigen P.A. en gitaren</span>
                     <span class="dot-sep" aria-hidden="true">·</span>
-                    <span>Reiskosten binnen 60 km rond Dordrecht inbegrepen</span>
+                    <span>Reiskosten binnen Zuid-Holland inbegrepen</span>
                 </div>
             </div>
         </div>
@@ -234,7 +239,7 @@
             <div class="section-head">
                 <span class="kicker">Boeken</span>
                 <h2 class="display">Plan een optreden.</h2>
-                <p class="lead-center">Vertel kort wat je in gedachten hebt. Reactie meestal binnen 24 uur op het opgegeven emailadres.</p>
+                <p class="lead-center">Vertel kort wat je in gedachten hebt. Reactie binnen 24 uur op het opgegeven emailadres.</p>
             </div>
 
             <form id="bookForm" class="book-form" method="POST" novalidate>
@@ -256,28 +261,28 @@
                     <input type="email" name="email" required autocomplete="email" placeholder="naam@voorbeeld.nl">
                 </label>
 
-                <div class="field-row">
-                    <label class="field">
-                        <span>Type evenement</span>
-                        <select name="type" required>
-                            <option value="" disabled selected>Maak een keuze</option>
-                            <option>Bruiloft</option>
-                            <option>Bedrijfsfeest</option>
-                            <option>Restaurant / horeca</option>
-                            <option>Verjaardag</option>
-                            <option>Anders</option>
-                        </select>
-                    </label>
-                    <label class="field">
-                        <span>Datum <em>als bekend</em></span>
-                        <input type="date" name="datum">
-                    </label>
-                </div>
+                <label class="field">
+                    <span>Type evenement</span>
+                    <select name="type" id="typeSelect" required>
+                        <option value="" disabled selected>Maak een keuze</option>
+                        <option>Bruiloft</option>
+                        <option>Bedrijfsfeest</option>
+                        <option>Restaurant / horeca</option>
+                        <option>Verjaardag</option>
+                        <option>Jubileum</option>
+                        <option>Anders</option>
+                    </select>
+                </label>
+
+                <label class="field" id="typeAnders" hidden>
+                    <span>Wat voor evenement?</span>
+                    <input type="text" name="type_anders" placeholder="Bv. bedrijfsopening, receptie, festival, afterparty">
+                </label>
 
                 <div class="field-row">
                     <label class="field">
-                        <span>Locatie <em>plaats of zaal</em></span>
-                        <input type="text" name="locatie" placeholder="Bv. Dordrecht, Restaurant De Kade">
+                        <span>Datum <em>als bekend</em></span>
+                        <input type="date" name="datum">
                     </label>
                     <label class="field">
                         <span>Gewenste duur</span>
@@ -288,6 +293,17 @@
                             <option>2 uur</option>
                             <option>Anders / in overleg</option>
                         </select>
+                    </label>
+                </div>
+
+                <div class="field-row">
+                    <label class="field">
+                        <span>Plaats</span>
+                        <input type="text" name="plaats" required autocomplete="address-level2" placeholder="Stad waar het optreden is">
+                    </label>
+                    <label class="field">
+                        <span>Naam locatie of zaal <em>optioneel</em></span>
+                        <input type="text" name="locatie" placeholder="Bv. Restaurant De Kade">
                     </label>
                 </div>
 
@@ -313,7 +329,7 @@
     <div class="container footer-inner">
         <div class="footer-brand">
             <div class="footer-logo">Sajac</div>
-            <div class="footer-tag">Live zanger · Dordrecht</div>
+            <div class="footer-tag">Live zanger · Zuid-Holland</div>
         </div>
         <div class="footer-meta">
             <a href="tel:+31612151650">06 12 15 16 50</a>

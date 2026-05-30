@@ -80,6 +80,26 @@ const pageLoadedAt = Date.now();
     const success = document.getElementById('bookSuccess');
     if (!form) return;
 
+    // "Anders" follow-up field: appears only when Type evenement is set to
+    // "Anders". When visible the inner input becomes required so the form
+    // can't be submitted without a description. Hidden again on any other
+    // selection.
+    const typeSelect = form.querySelector('#typeSelect');
+    const typeAnders = form.querySelector('#typeAnders');
+    if (typeSelect && typeAnders) {
+        const andersInput = typeAnders.querySelector('input');
+        const sync = () => {
+            const show = typeSelect.value === 'Anders';
+            typeAnders.hidden = !show;
+            if (andersInput) {
+                andersInput.required = show;
+                if (!show) andersInput.value = '';
+            }
+        };
+        typeSelect.addEventListener('change', sync);
+        sync();
+    }
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
@@ -93,9 +113,17 @@ const pageLoadedAt = Date.now();
         submitBtn.disabled = true;
         submitBtn.textContent = 'Versturen...';
 
+        // Combine "Anders" follow-up text into the type field if filled,
+        // so the destination email shows a meaningful event description
+        // regardless of which backend handles delivery.
+        const typeRaw = fd.get('type');
+        const typeAndersText = (fd.get('type_anders') || '').toString().trim();
+        const typeDisplay = typeRaw === 'Anders' && typeAndersText
+            ? `Anders: ${typeAndersText}`
+            : (typeRaw || '');
+
         try {
             if (FORMSPREE_ENDPOINT) {
-                // Real submit via Formspree
                 const res = await fetch(FORMSPREE_ENDPOINT, {
                     method: 'POST',
                     body: fd,
@@ -107,15 +135,17 @@ const pageLoadedAt = Date.now();
                 // No backend configured — open the user's mail client with
                 // a pre-filled message instead of silently failing. This
                 // way Day-1 bookings still reach the inbox.
-                const subject = `Boekingsaanvraag — ${fd.get('type') || 'optreden'} — ${fd.get('naam')}`;
+                const subject = `Boekingsaanvraag: ${typeDisplay || 'optreden'} - ${fd.get('naam')}`;
                 const lines = [];
+                const nv = '(niet opgegeven)';
                 lines.push(`Naam: ${fd.get('naam') || ''}`);
                 lines.push(`Email: ${fd.get('email') || ''}`);
-                lines.push(`Telefoon: ${fd.get('telefoon') || '—'}`);
-                lines.push(`Type evenement: ${fd.get('type') || '—'}`);
-                lines.push(`Datum: ${fd.get('datum') || '—'}`);
-                lines.push(`Locatie: ${fd.get('locatie') || '—'}`);
-                lines.push(`Duur: ${fd.get('duur') || '—'}`);
+                lines.push(`Telefoon: ${fd.get('telefoon') || nv}`);
+                lines.push(`Type evenement: ${typeDisplay || nv}`);
+                lines.push(`Datum: ${fd.get('datum') || nv}`);
+                lines.push(`Duur: ${fd.get('duur') || nv}`);
+                lines.push(`Plaats: ${fd.get('plaats') || nv}`);
+                lines.push(`Locatie / zaal: ${fd.get('locatie') || nv}`);
                 lines.push('');
                 lines.push('Toelichting:');
                 lines.push(fd.get('bericht') || '(geen)');
@@ -126,7 +156,7 @@ const pageLoadedAt = Date.now();
         } catch (err) {
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
-            alert('Verzenden mislukt. Bel of mail ons direct via 06 12 15 16 50 of info@sajac.nl.');
+            alert('Verzenden mislukt. Bel of mail direct via 06 12 15 16 50 of info@sajac.nl.');
         }
     });
 
