@@ -5,7 +5,7 @@
 // stays as the empty default the form falls back to a mailto: action so
 // the booking flow still works on day one. Sign-up: https://formspree.io
 // (free tier: 50 submissions/month, includes spam filter)
-const FORMSPREE_ENDPOINT = '';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkoeanrd';
 const FALLBACK_MAILTO    = 'info@sajac.nl';
 
 // --- YEAR -----------------------------------------------------------------
