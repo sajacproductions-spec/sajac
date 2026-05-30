@@ -21,6 +21,23 @@
 
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
 
+    <!-- Theme init: set data-theme on <html> BEFORE the stylesheet paints
+         so we never get a flash-of-wrong-theme. Reads localStorage first,
+         falls back to the user's OS preference via prefers-color-scheme. -->
+    <script>
+        (function () {
+            try {
+                var stored = localStorage.getItem('sajac-theme');
+                var dark = stored
+                    ? stored === 'dark'
+                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+            } catch (e) {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -79,14 +96,25 @@
 <header class="nav">
     <div class="nav-inner">
         <a href="#top" class="nav-logo">Sajac</a>
-        <nav class="nav-links" aria-label="Hoofdmenu">
-            <a href="#over">Over</a>
-            <a href="#repertoire">Repertoire</a>
-            <a href="#muziek">Muziek</a>
-            <a href="#prijzen">Prijzen</a>
-            <a href="#contact" class="nav-cta">Boek</a>
-        </nav>
-        <button class="nav-toggle" id="navToggle" aria-label="Menu openen"><span></span><span></span></button>
+        <div class="nav-actions">
+            <nav class="nav-links" aria-label="Hoofdmenu">
+                <a href="#over">Over</a>
+                <a href="#repertoire">Repertoire</a>
+                <a href="#muziek">Muziek</a>
+                <a href="#prijzen">Prijzen</a>
+                <a href="#contact" class="nav-cta">Boek</a>
+            </nav>
+            <button class="theme-toggle" id="themeToggle" aria-label="Wissel tussen lichte en donkere modus" title="Wissel tussen licht/donker">
+                <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+                </svg>
+                <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu openen"><span></span><span></span></button>
+        </div>
     </div>
 </header>
 

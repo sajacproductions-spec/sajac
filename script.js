@@ -6,6 +6,32 @@
 // remains visible (progressive enhancement, no blank page risk).
 document.documentElement.classList.replace('no-js', 'js');
 
+// --- THEME TOGGLE -------------------------------------------------------
+// The initial theme is set by the inline script in <head> (so no flash on
+// load). Here we wire the click handler to flip data-theme + persist to
+// localStorage, and listen for OS-level scheme changes for users who
+// haven't manually picked yet.
+(() => {
+    const toggle = document.getElementById('themeToggle');
+    if (!toggle) return;
+    const html = document.documentElement;
+
+    toggle.addEventListener('click', () => {
+        const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', next);
+        try { localStorage.setItem('sajac-theme', next); } catch (e) {}
+    });
+
+    // If user has never clicked the toggle, follow OS-level changes live.
+    if (window.matchMedia) {
+        const mq = window.matchMedia('(prefers-color-scheme: dark)');
+        mq.addEventListener?.('change', (e) => {
+            if (localStorage.getItem('sajac-theme')) return; // user has a choice, respect it
+            html.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+        });
+    }
+})();
+
 // --- CONFIG ---------------------------------------------------------------
 // Replace this with a real Formspree endpoint once registered. While it
 // stays as the empty default the form falls back to a mailto: action so
