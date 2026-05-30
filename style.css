@@ -12,18 +12,32 @@
     --paper-deep:   #ede5d4;   /* slightly darker cream for panels */
     --surface-elevated: #ffffff; /* focused inputs, raised cards */
     --ink:          #1a1612;   /* warm near-black for primary text */
-    --ink-soft:     #3a322a;   /* secondary text */
-    --ink-quiet:    #7a6f60;   /* meta text, captions */
-    --ink-faint:    #b8ab97;   /* dividers, hairlines */
-    --gold:         #b8842d;   /* warm gold accent - stage lights */
-    --gold-deep:    #8e6320;   /* hover state for gold */
+    --ink-soft:     #3a322a;
+    --ink-quiet:    #7a6f60;
+    --ink-faint:    #b8ab97;
+    --gold:         #b8842d;
+    --gold-deep:    #8e6320;
     --gold-glow:    rgba(184, 132, 45, 0.14);
-    --gold-line:    rgba(184, 132, 45, 0.55);  /* section divider */
-    --night:        #0f0d0a;   /* hero background, footer */
+    --gold-line:    rgba(184, 132, 45, 0.55);
+    --night:        #0f0d0a;
     --night-soft:   #1c1812;
 
-    --shadow-soft:  rgba(26, 22, 18, 0.07);
-    --shadow-card:  rgba(26, 22, 18, 0.05);
+    --shadow-soft:  rgba(26, 22, 18, 0.10);
+    --shadow-card:  rgba(26, 22, 18, 0.06);
+
+    --nav-bg-scrolled:     rgba(246, 241, 232, 0.92);
+    --nav-border-scrolled: rgba(184, 132, 45, 0.10);
+
+    --border-soft:   rgba(184, 132, 45, 0.18);
+    --border-hover:  rgba(184, 132, 45, 0.45);
+
+    /* Theme-CONSTANT tokens (never change between light/dark). Use for
+       text + UI that sits on always-dark surfaces: the hero photo, the
+       footer, hover-states of gold buttons. var(--paper) WOULD invert
+       between themes, which collapses readability on these surfaces. */
+    --on-dark:        #f6f1e8;
+    --on-dark-soft:   rgba(246, 241, 232, 0.82);
+    --on-dark-quiet:  rgba(246, 241, 232, 0.55);
 
     --serif:  'Fraunces', 'Times New Roman', Georgia, serif;
     --sans:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -34,27 +48,35 @@
 }
 
 /* ============================================================
-   DARK MODE
-   Inverted but not literally - warm dark base with slightly
-   brighter gold for legibility against dark backgrounds. Hero
-   stays its own dark composition (photo + overlay) regardless
-   of theme - controlled separately.
+   DARK MODE - "concert hall" aesthetic
+   Cool sophisticated near-black base (not brown/sepia) so the
+   warm gold accent really pops against it. Pairs the warm-white
+   typography against cool dark backgrounds, exactly how a stage
+   spotlight reads against a darkened concert hall. More
+   contemporary / premium-audio feel than the previous warm-on-
+   warm scheme which read as vintage.
    ============================================================ */
 :root[data-theme="dark"] {
-    --paper:        #18130f;
-    --paper-deep:   #211b15;   /* lighter than paper = raised panel */
-    --surface-elevated: #2a2218;
-    --ink:          #f0eae0;
-    --ink-soft:     rgba(240, 234, 224, 0.78);
-    --ink-quiet:    rgba(240, 234, 224, 0.55);
-    --ink-faint:    rgba(240, 234, 224, 0.30);
-    --gold:         #d4a14e;   /* brighter against dark bg */
-    --gold-deep:    #e8b46a;
-    --gold-glow:    rgba(212, 161, 78, 0.22);
-    --gold-line:    rgba(212, 161, 78, 0.45);
+    --paper:        #0e0e10;   /* cool near-black */
+    --paper-deep:   #17171b;   /* slightly raised panel */
+    --surface-elevated: #1f1f25;
+    --ink:          #fafaf6;   /* warm off-white, easy on the eyes */
+    --ink-soft:     rgba(250, 250, 246, 0.82);
+    --ink-quiet:    rgba(250, 250, 246, 0.55);
+    --ink-faint:    rgba(250, 250, 246, 0.30);
+    --gold:         #e5b463;   /* luminous warm gold against cool dark */
+    --gold-deep:    #f5cb7d;
+    --gold-glow:    rgba(229, 180, 99, 0.22);
+    --gold-line:    rgba(229, 180, 99, 0.48);
 
-    --shadow-soft:  rgba(0, 0, 0, 0.45);
-    --shadow-card:  rgba(0, 0, 0, 0.30);
+    --shadow-soft:  rgba(0, 0, 0, 0.50);
+    --shadow-card:  rgba(0, 0, 0, 0.35);
+
+    --nav-bg-scrolled:     rgba(14, 14, 16, 0.88);
+    --nav-border-scrolled: rgba(229, 180, 99, 0.10);
+
+    --border-soft:   rgba(229, 180, 99, 0.20);
+    --border-hover:  rgba(229, 180, 99, 0.55);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -108,7 +130,7 @@ h1.hero-title {
     font-size: clamp(3.2rem, 8vw, 5.5rem);
     line-height: 0.95;
     letter-spacing: -0.035em;
-    color: var(--paper);
+    color: var(--on-dark);
     margin-bottom: 1.1rem;
 }
 
@@ -141,25 +163,27 @@ p { color: var(--ink-soft); }
     transition: background 0.45s var(--ease), border-color 0.45s, box-shadow 0.45s, backdrop-filter 0.45s;
 }
 .nav.scrolled {
-    background: rgba(246, 241, 232, 0.92);
+    background: var(--nav-bg-scrolled);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-bottom-color: rgba(184, 132, 45, 0.10);
-    box-shadow: 0 6px 28px rgba(26, 22, 18, 0.05);
+    border-bottom-color: var(--nav-border-scrolled);
+    box-shadow: 0 6px 28px var(--shadow-card);
 }
-/* Light text + CTA inversion while floating over the dark hero photo */
-.nav:not(.scrolled) .nav-logo { color: var(--paper); }
-.nav:not(.scrolled) .nav-links a { color: rgba(246, 241, 232, 0.82); }
-.nav:not(.scrolled) .nav-links a:hover { color: var(--paper); }
+/* Light text + CTA inversion while floating over the dark hero photo.
+   Uses theme-CONSTANT --on-dark so it stays legible whether the body
+   is in light or dark mode (the hero photo + overlay are dark always). */
+.nav:not(.scrolled) .nav-logo { color: var(--on-dark); }
+.nav:not(.scrolled) .nav-links a { color: var(--on-dark-soft); }
+.nav:not(.scrolled) .nav-links a:hover { color: var(--on-dark); }
 .nav:not(.scrolled) .nav-links a.nav-cta {
-    background: var(--paper);
-    color: var(--ink);
+    background: var(--on-dark);
+    color: #1a1612;
 }
 .nav:not(.scrolled) .nav-links a.nav-cta:hover {
     background: var(--gold);
-    color: var(--ink);
+    color: #1a1612;
 }
-.nav:not(.scrolled) .nav-toggle span { background: var(--paper); }
+.nav:not(.scrolled) .nav-toggle span { background: var(--on-dark); }
 .nav-inner {
     max-width: var(--container);
     margin: 0 auto;
@@ -242,10 +266,10 @@ p { color: var(--ink-soft); }
 
 /* When nav is transparent over the dark hero, the toggle uses light tint */
 .nav:not(.scrolled) .theme-toggle {
-    color: rgba(246, 241, 232, 0.85);
+    color: var(--on-dark-soft);
     border-color: rgba(246, 241, 232, 0.45);
 }
-.nav:not(.scrolled) .theme-toggle:hover { color: var(--paper); border-color: var(--paper); }
+.nav:not(.scrolled) .theme-toggle:hover { color: var(--on-dark); border-color: var(--on-dark); }
 
 /* ---- HERO ---- */
 .hero {
@@ -255,7 +279,7 @@ p { color: var(--ink-soft); }
     display: flex;
     align-items: center;
     overflow: hidden;
-    color: var(--paper);
+    color: var(--on-dark);
     padding: 6rem 0 3.5rem;
 }
 .hero-bg {
@@ -328,7 +352,7 @@ p { color: var(--ink-soft); }
 }
 .btn-primary:hover {
     background: var(--gold-deep);
-    color: var(--paper);
+    color: var(--on-dark);
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(142, 99, 32, 0.22);
 }
@@ -341,8 +365,8 @@ p { color: var(--ink-soft); }
     opacity: 0.85;
 }
 .btn-ghost:hover { opacity: 1; transform: translateY(-2px); }
-.hero .btn-ghost { color: var(--paper); border-color: rgba(246,241,232,0.4); }
-.hero .btn-ghost:hover { border-color: var(--paper); }
+.hero .btn-ghost { color: var(--on-dark); border-color: rgba(246,241,232,0.4); }
+.hero .btn-ghost:hover { border-color: var(--on-dark); }
 
 .btn-block { width: 100%; }
 .btn-lg { padding: 1.1rem 2rem; font-size: 1rem; }
@@ -363,7 +387,7 @@ p { color: var(--ink-soft); }
 }
 .service-card {
     background: var(--paper);
-    border: 1px solid rgba(184, 132, 45, 0.16);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
     padding: 2rem 1.8rem;
     position: relative;
@@ -372,8 +396,8 @@ p { color: var(--ink-soft); }
 }
 .service-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(184, 132, 45, 0.45);
-    box-shadow: 0 18px 48px rgba(26, 22, 18, 0.07);
+    border-color: var(--border-hover);
+    box-shadow: 0 18px 48px var(--shadow-soft);
 }
 /* ANIMATION 6 — Service card hover arrow: a small gold arrow appears
    bottom-right when the cursor enters. Slides in from the left so it
@@ -413,7 +437,7 @@ p { color: var(--ink-soft); }
     grid-template-columns: repeat(3, 1fr);
     gap: 2.4rem;
     padding-top: 2.5rem;
-    border-top: 1px solid rgba(184, 132, 45, 0.18);
+    border-top: 1px solid var(--border-soft);
 }
 .foot-item strong {
     display: block;
@@ -440,7 +464,7 @@ p { color: var(--ink-soft); }
 }
 .song {
     background: var(--paper);
-    border: 1px solid rgba(184, 132, 45, 0.14);
+    border: 1px solid var(--border-soft);
     border-radius: 10px;
     padding: 0.85rem 1.1rem;
     display: flex;
@@ -449,7 +473,7 @@ p { color: var(--ink-soft); }
     transition: border-color 0.2s, transform 0.2s var(--ease);
 }
 .song:hover {
-    border-color: rgba(184, 132, 45, 0.4);
+    border-color: var(--border-hover);
     transform: translateY(-2px);
 }
 .song-title {
@@ -480,7 +504,7 @@ p { color: var(--ink-soft); }
     aspect-ratio: 16 / 9;
     border-radius: 14px;
     overflow: hidden;
-    box-shadow: 0 16px 44px rgba(26, 22, 18, 0.14);
+    box-shadow: 0 16px 44px var(--shadow-soft);
     background: #000;
 }
 .video-embed iframe {
@@ -496,9 +520,9 @@ p { color: var(--ink-soft); }
     text-align: center;
     padding: 3rem 2rem;
     background: var(--paper);
-    border: 1px solid rgba(184, 132, 45, 0.18);
+    border: 1px solid var(--border-soft);
     border-radius: 18px;
-    box-shadow: 0 18px 48px rgba(26, 22, 18, 0.05);
+    box-shadow: 0 18px 48px var(--shadow-card);
 }
 .price-from-label {
     font-size: 0.78rem;
@@ -578,7 +602,7 @@ p { color: var(--ink-soft); }
     font-size: 0.98rem;
     color: var(--ink);
     background-color: var(--paper);
-    border: 1px solid rgba(184, 132, 45, 0.25);
+    border: 1px solid var(--border-soft);
     border-radius: 10px;
     padding: 0.85rem 1rem;
     outline: none;
@@ -589,7 +613,7 @@ p { color: var(--ink-soft); }
 .field textarea::placeholder { color: var(--ink-faint); }
 .field input:hover,
 .field select:hover,
-.field textarea:hover { border-color: rgba(184, 132, 45, 0.45); }
+.field textarea:hover { border-color: var(--border-hover); }
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
@@ -638,19 +662,19 @@ p { color: var(--ink-soft); }
 .book-success {
     margin-top: 2.5rem;
     padding: 2.5rem 2rem;
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--night);
+    color: var(--on-dark);
     border-radius: 16px;
     text-align: center;
 }
-.book-success h3 { font-size: 1.5rem; margin-bottom: 0.6rem; color: var(--paper); }
-.book-success p { color: rgba(246, 241, 232, 0.75); max-width: 420px; margin: 0 auto; }
+.book-success h3 { font-size: 1.5rem; margin-bottom: 0.6rem; color: var(--on-dark); }
+.book-success p { color: var(--on-dark-soft); max-width: 420px; margin: 0 auto; }
 .book-success a { color: var(--gold); font-weight: 600; }
 
 /* ---- FOOTER ---- */
 .site-footer {
     background: var(--night);
-    color: var(--paper);
+    color: var(--on-dark);
     padding: 3.5rem 0 2.5rem;
 }
 .footer-inner {
