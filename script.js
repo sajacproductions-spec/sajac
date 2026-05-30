@@ -1,5 +1,11 @@
 /* SAJAC — site interactions */
 
+// Flip <html class="no-js"> -> "js" so the stagger CSS that hides
+// elements only kicks in when JavaScript is actually running. If JS
+// fails or is disabled, the .no-js class stays and all content
+// remains visible (progressive enhancement, no blank page risk).
+document.documentElement.classList.replace('no-js', 'js');
+
 // --- CONFIG ---------------------------------------------------------------
 // Replace this with a real Formspree endpoint once registered. While it
 // stays as the empty default the form falls back to a mailto: action so
@@ -27,29 +33,73 @@ document.getElementById('year').textContent = new Date().getFullYear();
     links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
 })();
 
-// --- REVEAL ON SCROLL ----------------------------------------------------
-// Sections fade up subtly as they enter the viewport. Only adds the class
-// on first intersection so it doesn't re-trigger on backwards scroll.
+// --- REVEAL + STAGGER ----------------------------------------------------
+// Each .section's key children fade up one after another (90ms apart) as
+// the section enters view. The .section itself also gets .in so its
+// preceding divider line can animate too. Only fires once per element so
+// scrolling back up doesn't re-trigger.
 (() => {
-    const targets = document.querySelectorAll('.section, .hero-inner');
-    targets.forEach(el => el.classList.add('reveal'));
+    // 1. Mark up the elements we want to stagger. Done in JS instead of HTML
+    //    so we don't have to touch every section in the markup. Per service
+    //    card / playlist item not the wrapping grid, so each card animates
+    //    on its own delay -> more deliberate reveal.
+    const childSelector = [
+        '.kicker',
+        'h1', 'h2',
+        '.hero-sub', '.hero-actions',
+        '.lead', '.lead-center',
+        '.service-card', '.service-foot',
+        '.song-grid', '.repertoire-foot',
+        '.video-embed',
+        '.price-anchor',
+        '.book-form'
+    ].join(', ');
 
+    document.querySelectorAll('.section, .hero-inner').forEach(root => {
+        root.querySelectorAll(childSelector).forEach(el => {
+            el.classList.add('stagger-target');
+        });
+    });
+
+    // Fallback: no IntersectionObserver -> just reveal everything
     if (!('IntersectionObserver' in window)) {
-        targets.forEach(el => el.classList.add('in'));
+        document.querySelectorAll('.stagger-target').forEach(el => el.classList.add('in'));
+        document.querySelectorAll('.section').forEach(s => s.classList.add('in'));
         return;
     }
+
+    const STAGGER_MS = 90;
+
+    const reveal = (root) => {
+        root.classList.add('in');
+        const items = root.querySelectorAll('.stagger-target:not(.in)');
+        items.forEach((el, i) => {
+            el.style.transitionDelay = (i * STAGGER_MS) + 'ms';
+            el.classList.add('in');
+        });
+    };
+
     const io = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in');
-                io.unobserve(entry.target);
-            }
+            if (!entry.isIntersecting) return;
+            reveal(entry.target);
+            io.unobserve(entry.target);
         });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    targets.forEach(el => io.observe(el));
+    }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 
-    // Hero should fade in immediately (it's above-the-fold).
-    requestAnimationFrame(() => document.querySelector('.hero-inner')?.classList.add('in'));
+    document.querySelectorAll('.section').forEach(s => io.observe(s));
+
+    // Hero is above-the-fold so reveal it immediately on next frame
+    // instead of waiting for the observer (which only fires after layout).
+    const heroInner = document.querySelector('.hero-inner');
+    if (heroInner) {
+        requestAnimationFrame(() => {
+            heroInner.querySelectorAll('.stagger-target').forEach((el, i) => {
+                el.style.transitionDelay = (i * 120) + 'ms';
+                el.classList.add('in');
+            });
+        });
+    }
 })();
 
 // --- NAV BG ON SCROLL ----------------------------------------------------
@@ -68,6 +118,46 @@ document.getElementById('year').textContent = new Date().getFullYear();
         if (!ticking) { requestAnimationFrame(update); ticking = true; }
     }, { passive: true });
     update();
+})();
+
+// --- SMOOTH SCROLL WITH CINEMATIC EASING ---------------------------------
+// Replaces the default CSS smooth-scroll for hash links so we control the
+// duration and easing curve. ease-out-cubic gives a deliberate
+// "settle into place" feel (fast start, slow finish) which reads as
+// premium and intentional. Honours prefers-reduced-motion by snapping
+// instantly instead of animating.
+(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const NAV_OFFSET = 70;
+    const DURATION = 900;
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const scrollTo = (target) => {
+        const startY = window.pageYOffset;
+        const endY = target.getBoundingClientRect().top + startY - NAV_OFFSET;
+        if (reduceMotion) { window.scrollTo(0, endY); return; }
+        const distance = endY - startY;
+        const startTime = performance.now();
+        const step = (now) => {
+            const t = Math.min((now - startTime) / DURATION, 1);
+            window.scrollTo(0, startY + distance * easeOutCubic(t));
+            if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+    };
+
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', (e) => {
+            const href = a.getAttribute('href');
+            if (!href || href.length <= 1) return;
+            const target = document.querySelector(href);
+            if (!target) return;
+            e.preventDefault();
+            scrollTo(target);
+            // Update URL hash without the browser's default jump.
+            history.replaceState(null, '', href);
+        });
+    });
 })();
 
 // --- BOOKING FORM SUBMISSION --------------------------------------------

@@ -48,6 +48,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; color: 
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    .hero-bg { animation: none !important; }
+    .stagger-target { opacity: 1 !important; transform: none !important; }
 }
 
 /* ---- TYPOGRAPHY ---- */
@@ -96,16 +98,39 @@ p { color: var(--ink-soft); }
 .section-head .kicker { display: block; }
 
 /* ---- NAV ---- */
+/* ANIMATION 3 — Nav is transparent over the dark hero (so the photo
+   breathes), fades into a cream backdrop with subtle shadow as soon as
+   the user scrolls past the hero zone. Logo + links go from light
+   (over photo) to dark (over paper) seamlessly. */
 .nav {
     position: fixed;
     top: 0; left: 0; right: 0;
     z-index: 50;
-    background: rgba(246, 241, 232, 0.85);
+    background: transparent;
+    border-bottom: 1px solid transparent;
+    box-shadow: 0 0 0 transparent;
+    transition: background 0.45s var(--ease), border-color 0.45s, box-shadow 0.45s, backdrop-filter 0.45s;
+}
+.nav.scrolled {
+    background: rgba(246, 241, 232, 0.92);
     backdrop-filter: blur(20px) saturate(160%);
     -webkit-backdrop-filter: blur(20px) saturate(160%);
-    border-bottom: 1px solid rgba(184, 132, 45, 0.10);
-    transition: background 0.3s, border-color 0.3s;
+    border-bottom-color: rgba(184, 132, 45, 0.10);
+    box-shadow: 0 6px 28px rgba(26, 22, 18, 0.05);
 }
+/* Light text + CTA inversion while floating over the dark hero photo */
+.nav:not(.scrolled) .nav-logo { color: var(--paper); }
+.nav:not(.scrolled) .nav-links a { color: rgba(246, 241, 232, 0.82); }
+.nav:not(.scrolled) .nav-links a:hover { color: var(--paper); }
+.nav:not(.scrolled) .nav-links a.nav-cta {
+    background: var(--paper);
+    color: var(--ink);
+}
+.nav:not(.scrolled) .nav-links a.nav-cta:hover {
+    background: var(--gold);
+    color: var(--ink);
+}
+.nav:not(.scrolled) .nav-toggle span { background: var(--paper); }
 .nav-inner {
     max-width: var(--container);
     margin: 0 auto;
@@ -175,6 +200,15 @@ p { color: var(--ink-soft); }
         url('images/sajac-hero.jpg') center 30% / cover no-repeat,
         radial-gradient(ellipse at 25% 30%, rgba(184, 132, 45, 0.28), transparent 55%),
         linear-gradient(180deg, #181410 0%, #0f0d0a 65%, #050402 100%);
+    /* ANIMATION 1 — Ken Burns: very slow zoom + pan, alternates direction.
+       Mimics the cinematic feel of a music documentary intro. Subtle scale
+       range (1.00 -> 1.08) so it never reads as motion sickness. */
+    transform-origin: 50% 35%;
+    animation: kenBurns 26s ease-in-out infinite alternate;
+}
+@keyframes kenBurns {
+    0%   { transform: scale(1.00) translate(0%, 0%); }
+    100% { transform: scale(1.08) translate(-1.2%, -0.8%); }
 }
 /* Subtle film-grain so the hero reads as cinematic, not flat. */
 .hero-bg::after {
@@ -264,12 +298,36 @@ p { color: var(--ink-soft); }
     border: 1px solid rgba(184, 132, 45, 0.16);
     border-radius: 14px;
     padding: 2rem 1.8rem;
+    position: relative;
+    overflow: hidden;
     transition: transform 0.3s var(--ease), border-color 0.3s, box-shadow 0.3s;
 }
 .service-card:hover {
     transform: translateY(-4px);
     border-color: rgba(184, 132, 45, 0.45);
     box-shadow: 0 18px 48px rgba(26, 22, 18, 0.07);
+}
+/* ANIMATION 6 — Service card hover arrow: a small gold arrow appears
+   bottom-right when the cursor enters. Slides in from the left so it
+   feels intentional (not "appears from nowhere"). pointer-events:none
+   so it never blocks the card's click area. */
+.service-card::after {
+    content: '\2192';
+    position: absolute;
+    bottom: 1.2rem;
+    right: 1.6rem;
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--gold);
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+    pointer-events: none;
+}
+.service-card:hover::after {
+    opacity: 1;
+    transform: translateX(0);
 }
 .service-num {
     font-family: var(--serif);
@@ -451,12 +509,12 @@ p { color: var(--ink-soft); }
     font-family: var(--sans);
     font-size: 0.98rem;
     color: var(--ink);
-    background: var(--paper);
+    background-color: var(--paper);
     border: 1px solid rgba(184, 132, 45, 0.25);
     border-radius: 10px;
     padding: 0.85rem 1rem;
     outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     width: 100%;
 }
 .field input::placeholder,
@@ -469,8 +527,28 @@ p { color: var(--ink-soft); }
 .field textarea:focus {
     border-color: var(--gold);
     box-shadow: 0 0 0 4px var(--gold-glow);
-    background: var(--white);
+    background-color: var(--white);
 }
+
+/* ANIMATION 5 — Form input gold underline: a thin gold bar slides in
+   from the left when any field in the label is focused. Uses scaleX +
+   :focus-within on the parent label so it works for input, select AND
+   textarea without per-element rules. */
+.field { position: relative; }
+.field::after {
+    content: '';
+    position: absolute;
+    left: 1px; right: 1px;
+    bottom: 0;
+    height: 2px;
+    background: var(--gold);
+    border-radius: 0 0 8px 8px;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    pointer-events: none;
+}
+.field:focus-within::after { transform: scaleX(1); }
 .field textarea { resize: vertical; min-height: 110px; }
 .field select {
     appearance: none;
@@ -545,13 +623,52 @@ p { color: var(--ink-soft); }
     letter-spacing: 0.02em;
 }
 
-/* ---- REVEAL ANIMATIONS — subtle, not bouncy ---- */
-.reveal {
+/* ============================================================
+   REVEAL + STAGGER
+   Elements marked .stagger-target by JS fade up when their parent
+   section enters the viewport. transition-delay is set inline per
+   element so the same section's items reveal one after another,
+   not all at once.
+
+   The .js gating is critical: if JavaScript fails to load, the
+   .no-js class on <html> keeps everything visible (no class is
+   added by JS, no class also means no opacity:0). Progressive
+   enhancement.
+   ============================================================ */
+.js .stagger-target {
     opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    transform: translateY(18px);
+    transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.reveal.in { opacity: 1; transform: none; }
+.js .stagger-target.in {
+    opacity: 1;
+    transform: none;
+}
+
+/* Legacy reveal class kept as alias for any existing markup */
+.reveal { opacity: 1; transform: none; }
+
+/* ANIMATION 7 — Section divider: a thin gold gradient line draws
+   itself between content sections when the lower section enters
+   view. .section gets .in via the same observer that staggers
+   children. Skipped between hero and first .section because hero
+   itself isn't .section, so the adjacent selector doesn't match. */
+.section { position: relative; }
+.section + .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 0;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(184, 132, 45, 0.55), transparent);
+    transform: translateX(-50%);
+    transition: width 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s;
+}
+.js .section + .section.in::before { width: 260px; }
+.no-js .section + .section::before { width: 260px; }
 
 /* ---- RESPONSIVE ---- */
 @media (max-width: 1000px) {
@@ -607,6 +724,21 @@ p { color: var(--ink-soft); }
         padding: 0.75rem 1rem;
     }
     .nav-toggle { display: flex; }
+
+    /* Mobile dropdown has its own paper background so the "transparent
+       nav over hero" light-text overrides would make links invisible
+       once the menu opens. Force dark text inside the dropdown
+       regardless of nav-scrolled state. */
+    .nav:not(.scrolled) .nav-links a { color: var(--ink-soft); }
+    .nav:not(.scrolled) .nav-links a:hover { color: var(--ink); }
+    .nav:not(.scrolled) .nav-links a.nav-cta {
+        background: var(--ink);
+        color: var(--paper);
+    }
+    .nav:not(.scrolled) .nav-links a.nav-cta:hover {
+        background: var(--gold-deep);
+        color: var(--paper);
+    }
 
     .hero { min-height: 72vh; padding: 5.5rem 0 2.8rem; }
     .hero-sub { font-size: 1rem; max-width: 100%; }
