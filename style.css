@@ -326,97 +326,48 @@ p { color: var(--ink-soft); }
 
 /* ---- PRICING ---- */
 .section-pricing { background: var(--paper-deep); }
-.price-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
-    align-items: stretch;
-    margin-bottom: 2rem;
-}
-.price-card {
+.price-anchor {
+    text-align: center;
+    padding: 3rem 2rem;
     background: var(--paper);
     border: 1px solid rgba(184, 132, 45, 0.18);
-    border-radius: 16px;
-    padding: 2.2rem 1.8rem;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    position: relative;
-    transition: transform 0.3s var(--ease), border-color 0.3s, box-shadow 0.3s;
+    border-radius: 18px;
+    box-shadow: 0 18px 48px rgba(26, 22, 18, 0.05);
 }
-.price-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(184, 132, 45, 0.5);
-    box-shadow: 0 18px 48px rgba(26, 22, 18, 0.08);
-}
-.price-featured {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-    transform: translateY(-6px);
-    box-shadow: 0 20px 56px rgba(26, 22, 18, 0.18);
-}
-.price-featured:hover {
-    transform: translateY(-9px);
-    box-shadow: 0 26px 64px rgba(26, 22, 18, 0.24);
-}
-.price-tag {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--gold);
-    color: var(--night);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 0.35rem 0.9rem;
-    border-radius: 999px;
-}
-.price-duration {
+.price-from-label {
     font-size: 0.78rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--ink-quiet);
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
 }
-.price-featured .price-duration { color: rgba(246, 241, 232, 0.65); }
-
-.price-amount {
+.price-from-amount {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 3.4rem;
+    font-size: clamp(4rem, 9vw, 5.6rem);
     line-height: 1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 1.4rem;
 }
-.price-featured .price-amount { color: var(--paper); }
-
-.price-desc {
-    font-size: 0.92rem;
+.price-from-desc {
+    font-size: 1.02rem;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    max-width: 480px;
+    margin: 0 auto 2rem;
+}
+.price-includes {
+    margin-top: 1.6rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.82rem;
     color: var(--ink-quiet);
-    margin-bottom: 1.8rem;
-    line-height: 1.55;
-    flex: 1;
 }
-.price-featured .price-desc { color: rgba(246, 241, 232, 0.65); }
-
-.price-featured .btn-primary {
-    background: var(--gold);
-    color: var(--night);
-}
-.price-featured .btn-primary:hover { background: var(--paper); color: var(--night); }
-
-.price-note {
-    text-align: center;
-    font-size: 0.92rem;
-    color: var(--ink-quiet);
-    margin-top: 2rem;
-}
-.price-note a { color: var(--gold); font-weight: 500; }
-.price-note a:hover { color: var(--gold-deep); }
+.price-includes .dot-sep { color: var(--gold); }
 
 /* ---- BOOKING FORM ---- */
 .section-booking { padding-bottom: 6rem; }
