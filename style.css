@@ -428,6 +428,11 @@ p { color: var(--ink-soft); }
     flex-direction: column;
     gap: 0.45rem;
 }
+/* The .field rule above overrides the browser's default display:none
+   for the [hidden] attribute, which broke the conditional "Anders"
+   follow-up fields (they stayed visible always). Explicitly re-hide
+   any .field marked hidden so the JS toggle actually works. */
+.field[hidden] { display: none; }
 .field > span {
     font-size: 0.82rem;
     font-weight: 600;

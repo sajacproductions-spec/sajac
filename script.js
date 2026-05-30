@@ -80,25 +80,35 @@ const pageLoadedAt = Date.now();
     const success = document.getElementById('bookSuccess');
     if (!form) return;
 
-    // "Anders" follow-up field: appears only when Type evenement is set to
-    // "Anders". When visible the inner input becomes required so the form
-    // can't be submitted without a description. Hidden again on any other
-    // selection.
-    const typeSelect = form.querySelector('#typeSelect');
-    const typeAnders = form.querySelector('#typeAnders');
-    if (typeSelect && typeAnders) {
-        const andersInput = typeAnders.querySelector('input');
+    // Generic toggle helper for the "select-with-Anders-follow-up" pattern.
+    // When the user picks one of the trigger values in the select, the
+    // wrapper field becomes visible and its inner input becomes required.
+    // Cleared + hidden + un-required on any other selection.
+    const wireOther = (selectEl, wrapperEl, triggers) => {
+        if (!selectEl || !wrapperEl) return;
+        const input = wrapperEl.querySelector('input');
         const sync = () => {
-            const show = typeSelect.value === 'Anders';
-            typeAnders.hidden = !show;
-            if (andersInput) {
-                andersInput.required = show;
-                if (!show) andersInput.value = '';
+            const show = triggers.includes(selectEl.value);
+            wrapperEl.hidden = !show;
+            if (input) {
+                input.required = show;
+                if (!show) input.value = '';
             }
         };
-        typeSelect.addEventListener('change', sync);
+        selectEl.addEventListener('change', sync);
         sync();
-    }
+    };
+
+    wireOther(
+        form.querySelector('#typeSelect'),
+        form.querySelector('#typeAnders'),
+        ['Anders']
+    );
+    wireOther(
+        form.querySelector('#duurSelect'),
+        form.querySelector('#duurAnders'),
+        ['Anders / in overleg']
+    );
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -113,14 +123,21 @@ const pageLoadedAt = Date.now();
         submitBtn.disabled = true;
         submitBtn.textContent = 'Versturen...';
 
-        // Combine "Anders" follow-up text into the type field if filled,
-        // so the destination email shows a meaningful event description
-        // regardless of which backend handles delivery.
+        // Combine "Anders" follow-up text into the displayed value so the
+        // destination email shows a meaningful description regardless of
+        // which backend handles delivery. Applies to both Type evenement
+        // and Gewenste duur (both have the same pattern).
         const typeRaw = fd.get('type');
         const typeAndersText = (fd.get('type_anders') || '').toString().trim();
         const typeDisplay = typeRaw === 'Anders' && typeAndersText
             ? `Anders: ${typeAndersText}`
             : (typeRaw || '');
+
+        const duurRaw = fd.get('duur');
+        const duurAndersText = (fd.get('duur_anders') || '').toString().trim();
+        const duurDisplay = duurRaw === 'Anders / in overleg' && duurAndersText
+            ? duurAndersText
+            : (duurRaw || '');
 
         try {
             if (FORMSPREE_ENDPOINT) {
@@ -143,7 +160,7 @@ const pageLoadedAt = Date.now();
                 lines.push(`Telefoon: ${fd.get('telefoon') || nv}`);
                 lines.push(`Type evenement: ${typeDisplay || nv}`);
                 lines.push(`Datum: ${fd.get('datum') || nv}`);
-                lines.push(`Duur: ${fd.get('duur') || nv}`);
+                lines.push(`Duur: ${duurDisplay || nv}`);
                 lines.push(`Plaats: ${fd.get('plaats') || nv}`);
                 lines.push(`Locatie / zaal: ${fd.get('locatie') || nv}`);
                 lines.push('');

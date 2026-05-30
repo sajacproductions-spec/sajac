@@ -286,7 +286,7 @@
                     </label>
                     <label class="field">
                         <span>Gewenste duur</span>
-                        <select name="duur" required>
+                        <select name="duur" id="duurSelect" required>
                             <option value="" disabled selected>Maak een keuze</option>
                             <option>30 minuten</option>
                             <option>1 uur</option>
@@ -295,6 +295,11 @@
                         </select>
                     </label>
                 </div>
+
+                <label class="field" id="duurAnders" hidden>
+                    <span>Hoeveel minuten of uur?</span>
+                    <input type="text" name="duur_anders" placeholder="Bv. 45 minuten, 1,5 uur, 3 uur">
+                </label>
 
                 <div class="field-row">
                     <label class="field">
