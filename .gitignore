@@ -19,3 +19,9 @@ node_modules/
 # Build artifacts (none expected for a static site, but future-proof)
 dist/
 build/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
