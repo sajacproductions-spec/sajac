@@ -82,7 +82,11 @@ document.getElementById('year').textContent = new Date().getFullYear();
         '.book-form'
     ].join(', ');
 
-    document.querySelectorAll('.section, .hero-inner').forEach(root => {
+    // Hero is excluded: it animates via pure CSS keyframes that run on
+    // page load. Keeping it out of the opacity-0 stagger system means
+    // LCP fires as soon as the hero title paints, instead of waiting
+    // for script.js to download + run on slow connections.
+    document.querySelectorAll('.section').forEach(root => {
         root.querySelectorAll(childSelector).forEach(el => {
             el.classList.add('stagger-target');
         });
@@ -115,18 +119,6 @@ document.getElementById('year').textContent = new Date().getFullYear();
     }, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
 
     document.querySelectorAll('.section').forEach(s => io.observe(s));
-
-    // Hero is above-the-fold so reveal it immediately on next frame
-    // instead of waiting for the observer (which only fires after layout).
-    const heroInner = document.querySelector('.hero-inner');
-    if (heroInner) {
-        requestAnimationFrame(() => {
-            heroInner.querySelectorAll('.stagger-target').forEach((el, i) => {
-                el.style.transitionDelay = (i * 120) + 'ms';
-                el.classList.add('in');
-            });
-        });
-    }
 })();
 
 // --- NAV BG ON SCROLL ----------------------------------------------------

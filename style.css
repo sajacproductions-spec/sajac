@@ -312,6 +312,25 @@ p { color: var(--ink-soft); }
     opacity: 0.35;
     pointer-events: none;
 }
+/* Hero entrance: pure-CSS slide-in that runs on page load, no JS gate.
+   transform-only (no opacity) so LCP fires immediately on first paint
+   instead of waiting for fade-in to complete. */
+.hero-inner > .kicker,
+.hero-inner > .hero-title,
+.hero-inner > .hero-sub,
+.hero-inner > .hero-actions {
+    animation: heroSlideIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-inner > .kicker        { animation-delay: 0ms; }
+.hero-inner > .hero-title    { animation-delay: 100ms; }
+.hero-inner > .hero-sub      { animation-delay: 200ms; }
+.hero-inner > .hero-actions  { animation-delay: 300ms; }
+
+@keyframes heroSlideIn {
+    from { transform: translateY(14px); }
+    to   { transform: none; }
+}
+
 .hero-inner {
     position: relative;
     max-width: var(--container);
