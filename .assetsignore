@@ -1,11 +1,25 @@
-# Files NOT to upload to Cloudflare Pages.
-# The new Workers-based Pages deploy doesn't auto-skip these
-# (the legacy Pages runtime did), so we list them explicitly.
+# Files NOT to upload to Cloudflare as static assets.
+# The new Workers + Assets runtime serves everything in the project root
+# unless it is listed here, so we explicitly exclude internals + source.
 
 # Local dev / VCS internals — would leak commit history if exposed
 .git/
 .gitignore
 .wrangler/
+
+# Worker source code is bundled by wrangler, not served as a file
+src/
+wrangler.jsonc
+wrangler.toml
+
+# Legacy Pages Functions directory (replaced by the Worker in src/)
+functions/
+
+# Local env / secrets
+.dev.vars
+.dev.vars*
+.env
+.env.*
 
 # Repo metadata — no value to serve publicly
 README.md

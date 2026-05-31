@@ -1,21 +1,42 @@
-// Cloudflare Pages Function — handles the booking form submit.
-// Flow:
-//   1. Receive the form POST from the browser
-//   2. Forward it to Formspree (so the email backup keeps working)
-//   3. Fire a WhatsApp notification to Johan via CallMeBot
+// Cloudflare Worker for sajac.nl
 //
-// Secrets are set in the Cloudflare Pages dashboard under:
-//   Settings -> Environment variables -> Production
+// Handles the booking form POST at /api/book. Everything else falls
+// through to the static assets (handled automatically by the Workers
+// + Assets runtime, default behaviour: try asset first, run Worker
+// only when there is no matching file).
+//
+// Booking flow:
+//   1. Receive the form POST
+//   2. Forward to Formspree (email backup keeps working)
+//   3. Ping CallMeBot to send a WhatsApp to Johan
+//
+// Secrets are set in the Cloudflare dashboard under:
+//   Bindings -> Variables and Secrets
 // Required vars:
-//   CALLMEBOT_API_KEY  (the key Johan got when activating CallMeBot)
-//   WHATSAPP_PHONE     (Johan's number in international format, e.g. +31612151650)
-//   FORMSPREE_ENDPOINT (optional override, defaults to the existing one)
+//   CALLMEBOT_API_KEY  (Encrypt: yes)
+//   WHATSAPP_PHONE     (Plain text, e.g. +31612151650)
+//   FORMSPREE_ENDPOINT (optional override)
 
 const DEFAULT_FORMSPREE = 'https://formspree.io/f/xkoeanrd';
 
-export async function onRequestPost(context) {
-    const { request, env } = context;
+export default {
+    async fetch(request, env, ctx) {
+        const url = new URL(request.url);
 
+        if (url.pathname === '/api/book') {
+            if (request.method !== 'POST') {
+                return new Response('Method not allowed', { status: 405 });
+            }
+            return handleBooking(request, env);
+        }
+
+        // No matching route. The Worker only runs for requests the static
+        // assets layer could not satisfy, so this means a real 404.
+        return new Response('Not found', { status: 404 });
+    },
+};
+
+async function handleBooking(request, env) {
     try {
         const formData = await request.formData();
 
@@ -24,7 +45,6 @@ export async function onRequestPost(context) {
             return jsonOk();
         }
 
-        // 1. Forward to Formspree so the email backup keeps working.
         const formspreeRes = await fetch(env.FORMSPREE_ENDPOINT || DEFAULT_FORMSPREE, {
             method: 'POST',
             body: formData,
@@ -35,14 +55,14 @@ export async function onRequestPost(context) {
             return jsonError('Email versturen mislukt', 502);
         }
 
-        // 2. WhatsApp notification via CallMeBot. Fire-and-forget logic:
-        //    even if WhatsApp fails the booking succeeds, because the
-        //    Formspree email already went out.
+        // WhatsApp notification is fire-and-forget. Even if it fails the
+        // booking is considered a success, because the Formspree email
+        // already went out.
         if (env.CALLMEBOT_API_KEY && env.WHATSAPP_PHONE) {
             try {
                 await sendWhatsApp(formData, env);
             } catch (e) {
-                // Silently swallow. Email is the source of truth.
+                // Silently swallow. Email remains the source of truth.
             }
         }
 
