@@ -156,8 +156,10 @@ document.getElementById('year').textContent = new Date().getFullYear();
 (() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const NAV_OFFSET = 70;
-    const DURATION = 900;
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+    const DURATION = 320;
+    // easeOutQuart: sharper deceleration than cubic, feels snappier
+    // for short nav jumps while still showing direction of travel.
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 4);
 
     const scrollTo = (target) => {
         const startY = window.pageYOffset;
