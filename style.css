@@ -572,6 +572,45 @@ p { color: var(--ink-soft); }
     color: var(--ink);
     margin-bottom: 1.4rem;
 }
+.price-tiers {
+    list-style: none;
+    margin: 0 auto 2rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    max-width: 620px;
+}
+.price-tier {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.6rem 1rem;
+    background: var(--paper-deep);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+}
+.price-tier-featured {
+    background: var(--paper);
+    border-color: var(--gold);
+    box-shadow: 0 10px 28px var(--shadow-soft);
+}
+.price-tier-duration {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-quiet);
+}
+.price-tier-amount {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(2rem, 4vw, 2.6rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+}
 .price-from-desc {
     font-size: 1.02rem;
     line-height: 1.65;
@@ -882,6 +921,9 @@ p { color: var(--ink-soft); }
     .price-anchor { padding: 2.2rem 1.4rem; }
     .price-from-amount { font-size: 3.6rem; }
     .price-from-desc { font-size: 0.95rem; }
+    .price-tiers { grid-template-columns: 1fr; gap: 0.7rem; }
+    .price-tier { flex-direction: row; justify-content: space-between; padding: 1rem 1.2rem; }
+    .price-tier-amount { font-size: 1.6rem; }
     .price-includes { font-size: 0.75rem; gap: 0.3rem; }
     .price-includes .dot-sep { display: none; }
 
