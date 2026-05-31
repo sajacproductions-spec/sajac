@@ -33,12 +33,13 @@ document.documentElement.classList.replace('no-js', 'js');
 })();
 
 // --- CONFIG ---------------------------------------------------------------
-// Replace this with a real Formspree endpoint once registered. While it
-// stays as the empty default the form falls back to a mailto: action so
-// the booking flow still works on day one. Sign-up: https://formspree.io
-// (free tier: 50 submissions/month, includes spam filter)
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xkoeanrd';
-const FALLBACK_MAILTO    = 'info@sajac.nl';
+// Form posts to our own Cloudflare Pages Function at /api/book, which
+// forwards to Formspree (email backup) and pings CallMeBot to send a
+// WhatsApp to Johan. See functions/api/book.js. If the function is
+// unreachable (e.g. local file:// preview) the form falls back to a
+// mailto: link so a booking can still reach the inbox.
+const BOOK_ENDPOINT   = '/api/book';
+const FALLBACK_MAILTO = 'info@sajac.nl';
 
 // --- YEAR -----------------------------------------------------------------
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -256,13 +257,13 @@ const pageLoadedAt = Date.now();
             : (duurRaw || '');
 
         try {
-            if (FORMSPREE_ENDPOINT) {
-                const res = await fetch(FORMSPREE_ENDPOINT, {
+            if (BOOK_ENDPOINT && location.protocol !== 'file:') {
+                const res = await fetch(BOOK_ENDPOINT, {
                     method: 'POST',
                     body: fd,
                     headers: { 'Accept': 'application/json' },
                 });
-                if (!res.ok) throw new Error('Formspree failed: ' + res.status);
+                if (!res.ok) throw new Error('Booking endpoint failed: ' + res.status);
                 showSuccess();
             } else {
                 // No backend configured — open the user's mail client with
